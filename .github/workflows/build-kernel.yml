@@ -106,16 +106,16 @@ jobs:
           apt-get install -y sudo
 
       - name: Compilation environment preparation
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/build-env@mainline
+        uses: ./.github/workflows/build-env@mainline
 
       - name: Get necessary tools
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/build-ready@mainline
+        uses: ./.github/workflows/build-ready@mainline
 
       - name: Patch Kernel of SUSFS
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/patch-susfs@mainline
+        uses: ./.github/workflows/patch-susfs@mainline
 
       - name: Patch for no-kprobe
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/patch-no-kprobe@mainline
+        uses: ./.github/workflows/patch-no-kprobe@mainline
 
       - name: Extra Kernel Options (perf/adem/ram)
         run: |
@@ -164,10 +164,10 @@ jobs:
           bash $GITHUB_WORKSPACE/misc/iosched_prep.sh
 
       - name: Build Process
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/build-process@mainline
+        uses: ./.github/workflows/build-process@mainline
 
       - name: Pack Process
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/pack-process@mainline
+        uses: ./.github/workflows/pack-process@mainline
 
       - name: Upload Artifacts
-        uses: IniGwYaN/NonGKI_Kernel_Build_2nd/.github/workflows/upload-files@mainline
+        uses: ./.github/workflows/upload-files@mainline
