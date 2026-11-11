@@ -15,7 +15,7 @@ runs:
           mkdir -p tmp
 
           if [[ "${{ env.AK3_SOURCE }}" =~ "osm0sis" ]]; then
-            sed -i 's/ExampleKernel by osm0sis @ xda-developers/NonGKI Kernel Build by JackAltman @ GitHub/g' AnyKernel3/anykernel.sh
+            sed -i 's/ExampleKernel by osm0sis @ xda-developers/Elfa v1 by YAN/g' AnyKernel3/anykernel.sh
             sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
             sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
             sed -i 's/IS_SLOT_DEVICE=0;/IS_SLOT_DEVICE=auto;/g' AnyKernel3/anykernel.sh
@@ -52,14 +52,33 @@ PY
 
           # Paksa maple sebagai IO scheduler (userspace override saat boot)
           python3 - <<'PY'
+import os, glob
 fn = "AnyKernel3/anykernel.sh"
 s = open(fn).read()
 anchor = "dump_boot;"
 assert anchor in s, "dump_boot anchor not found"
-inject = anchor + \n\n# --- Paksa maple IO scheduler setelah boot selesai ---\nif [ -f \"$RAMDISK/init.rc\" ]; then\n  cat >> \"$RAMDISK/init.rc\" <<'EOF'\n\non property:sys.boot_completed=1\n    write /sys/block/mmcblk0/queue/scheduler maple\n    write /sys/block/sda/queue/scheduler maple\n    write /sys/block/sdb/queue/scheduler maple\n    write /sys/block/sdc/queue/scheduler maple\n    write /sys/block/sde/queue/scheduler maple\nEOF\nfi\n# --- akhir paksa maple ---\n'
+# Blok init.rc: set maple di late_start & boot_completed
+rc_block = (
+    "\n# --- Elfa: paksa maple IO scheduler ---\n"
+    "on late_start\n"
+    "    write /sys/block/mmcblk0/queue/scheduler maple\n"
+    "    write /sys/block/sda/queue/scheduler maple\n"
+    "    write /sys/block/sdb/queue/scheduler maple\n"
+    "    write /sys/block/sdc/queue/scheduler maple\n"
+    "    write /sys/block/sde/queue/scheduler maple\n"
+    "on property:sys.boot_completed=1\n"
+    "    write /sys/block/mmcblk0/queue/scheduler maple\n"
+    "    write /sys/block/sda/queue/scheduler maple\n"
+    "    write /sys/block/sdb/queue/scheduler maple\n"
+    "    write /sys/block/sdc/queue/scheduler maple\n"
+    "    write /sys/block/sde/queue/scheduler maple\n"
+    "# --- akhir ---\n"
+)
+inject = anchor + rc_block
 s = s.replace(anchor, inject, 1)
 open(fn,"w").write(s)
 PY
+
 
           if [[ -f "$IMAGE_DIR/Image.gz-dtb" ]]; then
             cp -fp $IMAGE_DIR/Image.gz-dtb tmp
