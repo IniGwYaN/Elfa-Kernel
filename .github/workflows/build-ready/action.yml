@@ -8,19 +8,11 @@ runs:
         run: |
           cd $GITHUB_WORKSPACE
 
-          echo "::group::[+] Starting git clone kernel source code..."
-          git clone --recursive "${{ env.KERNEL_SOURCE }}" -b "${{ env.KERNEL_BRANCH }}" device_kernel --depth=1
-
-          if [[ -f "device_kernel/.gitmodules" ]]; then
-            cd device_kernel
-            git submodule init
-            git submodule update
-            cd ../
-            echo "[+] Detected GitModules."
-
-          fi
+          echo "::group::[+] Preparing local kernel source (self-contained)..."
+          mkdir -p device_kernel
+          tar cf - --exclude=./device_kernel -C $GITHUB_WORKSPACE . | tar xf - -C device_kernel
           echo "::endgroup::"
-          echo "[+] Kernel source code is cloned."
+          echo "[+] Kernel source prepared from repo tree."
 
           # Get Kernel Version
 
