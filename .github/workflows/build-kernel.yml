@@ -132,7 +132,7 @@ jobs:
           add 'CONFIG_IOSCHED_TRIPNDROID=y'
           add 'CONFIG_IOSCHED_FIOPS=y'
           add 'CONFIG_IOSCHED_SIO=y'
-          add 'CONFIG_DEFAULT_IOSCHED="zen"'
+          add 'CONFIG_DEFAULT_IOSCHED="maple"'
           add 'CONFIG_TCP_CONG_WESTWOOD=y'
           add 'CONFIG_DEFAULT_TCP_CONG="westwood"'
           add 'CONFIG_SCHED_AUTOGROUP=y'
