@@ -3,8 +3,17 @@
 # maple comes from repo Patches/maple-iosched.c; others downloaded at build time.
 set -e
 cd "$GITHUB_WORKSPACE/device_kernel"
-# Maple from vendored local copy
-cp "$GITHUB_WORKSPACE/Patches/maple-iosched.c" block/maple-iosched.c
+echo "[+] CWD: $(pwd)"
+echo "[+] ls Patches:"; ls Patches/ 2>/dev/null | head -5 || echo "  (tidak ada Patches/)"
+# Maple from vendored local copy (cari di beberapa lokasi)
+if [[ -f "Patches/maple-iosched.c" ]]; then
+  cp Patches/maple-iosched.c block/maple-iosched.c
+elif [[ -f "$GITHUB_WORKSPACE/Patches/maple-iosched.c" ]]; then
+  cp "$GITHUB_WORKSPACE/Patches/maple-iosched.c" block/maple-iosched.c
+else
+  echo "[-] maple lokal tidak ketemu, coba unduh dari LawRun"
+  curl -fsSL "https://raw.githubusercontent.com/negrroo/LawRun_xiaomi_sdm845_CAF/HEAD/block/maple-iosched.c" -o block/maple-iosched.c || { echo "[-] maple unduh gagal"; exit 1; }
+fi
 IB="https://raw.githubusercontent.com/negrroo/LawRun_xiaomi_sdm845_CAF/HEAD/block"
 for f in anxiety-iosched.c zen-iosched.c tripndroid-iosched.c fiops-iosched.c sio-iosched.c; do
   curl -fsSL "$IB/$f" -o "block/$f" || echo "warning: failed to fetch $f"
