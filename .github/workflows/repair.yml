@@ -1,0 +1,48 @@
+name: Repair (force-add gitignored firmware)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Fetch missing files from fork (force-add gitignored)
+        env:
+          TOK: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          cd /tmp
+          git clone --depth 1 --single-branch -b v0.5.5-playtest \
+            https://x-access-token:${TOK}@github.com/IniGwYaN/android_kernel_xiaomi_sdm845.git ksrc
+          cd $GITHUB_WORKSPACE
+          # salin source (kecuali harness yang sudah ada di Elfa)
+          rsync -a --exclude='.git' --exclude='.github' --exclude='Bin' \
+            --exclude='Patches' --exclude='misc' --exclude='gpu_lmh_unlock.c' \
+            --exclude='README.md' /tmp/ksrc/ ./
+          rm -rf /tmp/ksrc
+
+      - name: Guard files > 100MB
+        run: |
+          BIG=$(find . -type f -size +100M -not -path './.git/*' -not -path './out/*')
+          if [ -n "$BIG" ]; then echo "FATAL: files >100MB:"; echo "$BIG"; exit 1; fi
+          echo "OK"
+
+      - name: Force-add all (include gitignored) & push
+        run: |
+          set -e
+          git config user.email "81572430+IniGwYaN@users.noreply.github.com"
+          git config user.name "YAN"
+          git add -f -A
+          if git diff --cached --quiet; then echo "nothing to commit"; else
+            git commit -m "Repair: force-add gitignored firmware files (*.i/*.bin/*.gz)"
+            git push origin HEAD:main
+          fi
