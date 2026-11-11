@@ -31,6 +31,25 @@ runs:
 
           fi
 
+          # Sisipkan banner flash (ASCII art) ke anykernel.sh
+          if [[ -f "$GITHUB_WORKSPACE/misc/flash_banner.txt" ]]; then
+            BANNER=$(cat "$GITHUB_WORKSPACE/misc/flash_banner.txt")
+            UI_PRINT=""
+            while IFS= read -r line; do
+              UI_PRINT="${UI_PRINT}ui_print \"${line}\";"$'\n'
+            done <<< "$BANNER"
+            python3 - "$UI_PRINT" <<'PY'
+import sys
+banner = sys.argv[1]
+fn = "AnyKernel3/anykernel.sh"
+s = open(fn).read()
+anchor = ". tools/ak3-core.sh;\n"
+assert anchor in s, "anchor not found"
+s = s.replace(anchor, anchor + "\n# --- banner flash ---\n" + banner + "# --- end ---\n", 1)
+open(fn,"w").write(s)
+PY
+          fi
+
           if [[ -f "$IMAGE_DIR/Image.gz-dtb" ]]; then
             cp -fp $IMAGE_DIR/Image.gz-dtb tmp
             echo "Found Image.gz-dtb !"
