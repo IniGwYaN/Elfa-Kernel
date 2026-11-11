@@ -1,10 +1,13 @@
 #!/bin/bash
-# Prepare extra I/O schedulers (from LawRun sdm845 4.9, API bi_opf)
+# Prepare extra I/O schedulers (self-contained)
+# maple comes from repo Patches/maple-iosched.c; others downloaded at build time.
 set -e
 cd "$GITHUB_WORKSPACE/device_kernel"
+# Maple from vendored local copy
+cp "$GITHUB_WORKSPACE/Patches/maple-iosched.c" block/maple-iosched.c
 IB="https://raw.githubusercontent.com/negrroo/LawRun_xiaomi_sdm845_CAF/HEAD/block"
-for f in anxiety-iosched.c maple-iosched.c zen-iosched.c tripndroid-iosched.c fiops-iosched.c sio-iosched.c; do
-  curl -fsSL "$IB/$f" -o "block/$f"
+for f in anxiety-iosched.c zen-iosched.c tripndroid-iosched.c fiops-iosched.c sio-iosched.c; do
+  curl -fsSL "$IB/$f" -o "block/$f" || echo "warning: failed to fetch $f"
 done
 grep -q 'IOSCHED_MAPLE' block/Kconfig.iosched || cat >> block/Kconfig.iosched <<'KCFG'
 config IOSCHED_MAPLE
