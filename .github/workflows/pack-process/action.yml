@@ -50,6 +50,17 @@ open(fn,"w").write(s)
 PY
           fi
 
+          # Paksa maple sebagai IO scheduler (userspace override saat boot)
+          python3 - <<'PY'
+fn = "AnyKernel3/anykernel.sh"
+s = open(fn).read()
+anchor = "dump_boot;"
+assert anchor in s, "dump_boot anchor not found"
+inject = anchor + \n\n# --- Paksa maple IO scheduler setelah boot selesai ---\nif [ -f \"$RAMDISK/init.rc\" ]; then\n  cat >> \"$RAMDISK/init.rc\" <<'EOF'\n\non property:sys.boot_completed=1\n    write /sys/block/mmcblk0/queue/scheduler maple\n    write /sys/block/sda/queue/scheduler maple\n    write /sys/block/sdb/queue/scheduler maple\n    write /sys/block/sdc/queue/scheduler maple\n    write /sys/block/sde/queue/scheduler maple\nEOF\nfi\n# --- akhir paksa maple ---\n'
+s = s.replace(anchor, inject, 1)
+open(fn,"w").write(s)
+PY
+
           if [[ -f "$IMAGE_DIR/Image.gz-dtb" ]]; then
             cp -fp $IMAGE_DIR/Image.gz-dtb tmp
             echo "Found Image.gz-dtb !"
