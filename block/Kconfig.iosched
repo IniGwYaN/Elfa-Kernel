@@ -32,6 +32,42 @@ config IOSCHED_CFQ
 
 	  This is the default I/O scheduler.
 
+config IOSCHED_MAPLE
+	tristate "Maple I/O scheduler"
+	default y
+	---help---
+	  Maple I/O scheduler.
+
+config IOSCHED_ANXIETY
+	tristate "Anxiety I/O scheduler"
+	default n
+	---help---
+	  Anxiety I/O scheduler.
+
+config IOSCHED_ZEN
+	tristate "Zen I/O scheduler"
+	default n
+	---help---
+	  Zen I/O scheduler.
+
+config IOSCHED_TRIPNDROID
+	tristate "Tripndroid I/O scheduler"
+	default n
+	---help---
+	  Tripndroid I/O scheduler.
+
+config IOSCHED_FIOPS
+	tristate "Fiops I/O scheduler"
+	default n
+	---help---
+	  Fiops I/O scheduler.
+
+config IOSCHED_SIO
+	tristate "SIO I/O scheduler"
+	default n
+	---help---
+	  SIO I/O scheduler.
+
 config CFQ_GROUP_IOSCHED
 	bool "CFQ Group Scheduling support"
 	depends on IOSCHED_CFQ && BLK_CGROUP
