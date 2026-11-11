@@ -106,16 +106,16 @@ jobs:
           apt-get install -y sudo
 
       - name: Compilation environment preparation
-        uses: ./.github/workflows/build-env@mainline
+        uses: ./.github/workflows/build-env
 
       - name: Get necessary tools
-        uses: ./.github/workflows/build-ready@mainline
+        uses: ./.github/workflows/build-ready
 
       - name: Patch Kernel of SUSFS
-        uses: ./.github/workflows/patch-susfs@mainline
+        uses: ./.github/workflows/patch-susfs
 
       - name: Patch for no-kprobe
-        uses: ./.github/workflows/patch-no-kprobe@mainline
+        uses: ./.github/workflows/patch-no-kprobe
 
       - name: Extra Kernel Options (perf/adem/ram)
         run: |
@@ -164,10 +164,10 @@ jobs:
           bash $GITHUB_WORKSPACE/misc/iosched_prep.sh
 
       - name: Build Process
-        uses: ./.github/workflows/build-process@mainline
+        uses: ./.github/workflows/build-process
 
       - name: Pack Process
-        uses: ./.github/workflows/pack-process@mainline
+        uses: ./.github/workflows/pack-process
 
       - name: Upload Artifacts
-        uses: ./.github/workflows/upload-files@mainline
+        uses: ./.github/workflows/upload-files
