@@ -90,6 +90,9 @@ jobs:
   build-kernel:
     name: POCO F1 beryllium (LineageOS 20, kernel 4.9)
     runs-on: ubuntu-24.04
+    container:
+      image: ubuntu:focal
+      options: --dns 8.8.8.8 --dns 8.8.4.4
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -99,6 +102,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Install sudo (DNS fix)
+        run: |
+          set -e
+          printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' > /etc/resolv.conf || true
+          for i in 1 2 3; do
+            apt-get update -o Acquire::Retries=5 && break || { echo retry $i; sleep 8; }
+          done
+          apt-get install -y sudo -o Acquire::Retries=5 || (sleep 8; apt-get install -y sudo)
 
       - name: Compilation environment preparation
         uses: ./.github/workflows/build-env
