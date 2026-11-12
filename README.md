@@ -9,7 +9,7 @@ Built entirely with GitHub Actions and published here as flashable releases.
 ## Features
 
 - **Clean, proven base** — line from the `lineage-20` fork @ `a7809bd68e`, the same source as the v0.5.5 build that boots reliably.
-- **BakaSU + SUSFS v2.3.0** — KernelSU fork with SUSFS (Chimera).
+- **BakaSU + SUSFS v2.4.0**
 - **GPU fix** — LMH thermal cap removed (`msm_lmh_dcvs.c` without the `CPUFREQ_ADJUST` clamp + `CONFIG_QTI_THERMAL_LIMITS_DCVS=n`). The GPU is no longer stuck at 257 MHz and ramps up immediately under load.
 - **Perf tuning** — extra I/O schedulers (zen / maple / fiops / sio / anxiety / tripndroid), tuned interactive cpufreq defaults, zram + swap, westwood TCP, and more.
 
