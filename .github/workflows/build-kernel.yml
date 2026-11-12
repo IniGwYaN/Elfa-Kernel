@@ -131,7 +131,7 @@ jobs:
           add 'CONFIG_CPU_FREQ_GOV_INTERACTIVE=y'
           add 'CONFIG_MSM_PERFORMANCE=y'
           add 'CONFIG_CPU_BOOST=y'
-          add 'CONFIG_IOSCHED_DEADLINE=y'
+          add 'CONFIG_IOSCHED_DEADLINE=n'
           add 'CONFIG_IOSCHED_ANXIETY=y'
           add 'CONFIG_IOSCHED_MAPLE=y'
           add 'CONFIG_IOSCHED_ZEN=y'
