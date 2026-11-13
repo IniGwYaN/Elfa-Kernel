@@ -2209,6 +2209,8 @@ struct task_struct {
  *
  * Do not put anything below here!
  */
+
+	struct task_struct *simple_lmk_next;
 };
 
 #ifdef CONFIG_ARCH_WANTS_DYNAMIC_TASK_STRUCT
